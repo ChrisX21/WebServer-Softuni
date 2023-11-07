@@ -7,11 +7,10 @@ using WebServer.HTTP;
 
 namespace WebServer.Response
 {
-    public class BadRequestResponse : Responce
+    public class UnauthorizedResponse : Responce
     {
-        public BadRequestResponse() : base(StatusCode.BadRequest)
+        public UnauthorizedResponse() : base(StatusCode.Unauthorized)
         {
-
         }
     }
 }
