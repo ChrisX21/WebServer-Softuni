@@ -7,6 +7,7 @@ namespace BasicWebServer.Server.HTTP
 {
     public class Request
     {
+        private static Dictionary<string, Session> Sessions = new();
         public Method Method { get; private set; }
 
         public string Url { get; private set; }
@@ -14,6 +15,8 @@ namespace BasicWebServer.Server.HTTP
         public HeaderCollection Headers { get; private set; }
 
         public string Body { get; private set; }
+        
+        public Session Session { get; private set; }
 
         public CookieCollection Cookies {get; private set;} 
         public IReadOnlyDictionary<string, string> Form { get; private set; }
@@ -25,6 +28,7 @@ namespace BasicWebServer.Server.HTTP
             var startLine = lines.First().Split(" ");
 
             var method = ParseMethod(startLine[0]);
+            
             var url = startLine[1];
 
             var headers = ParseHeaders(lines.Skip(1));
@@ -32,6 +36,8 @@ namespace BasicWebServer.Server.HTTP
             var bodyLines = lines.Skip(headers.Count + 2).ToArray();
 
             var cookies = ParseCookies(headers);
+
+            var session = GetSession(cookies);
 
             var body = string.Join("\r\n", bodyLines);
 
@@ -44,6 +50,7 @@ namespace BasicWebServer.Server.HTTP
                 Headers = headers,
                 Cookies = cookies,
                 Body = body,
+                Session = session,
                 Form = form
             };
         }
@@ -68,6 +75,20 @@ namespace BasicWebServer.Server.HTTP
             }
 
             return cookieCollection;
+        }
+
+        private static Session GetSession(CookieCollection cookies)
+        {
+            var sessionId = cookies.Contains(HTTP.Session.SessionCookieName)
+                ? cookies[Session.SessionCookieName]
+                : Guid.NewGuid().ToString();
+
+            if (!Sessions.ContainsKey(sessionId))
+            {
+                Sessions[sessionId] = new Session(sessionId);
+            }
+
+            return Sessions[sessionId];
         }
 
         private static Method ParseMethod(string method)

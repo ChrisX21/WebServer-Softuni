@@ -7,7 +7,7 @@ namespace BasicWebServer.Server.HTTP;
 public class Session
 {
     public const string SessionCookieName = "MyWebServerSID";
-    public const string SessionCookieDateKey = "CurrentDate";
+    public const string SessionCurrentDateKey = "CurrentDate";
     private Dictionary<string, string> data;
 
     public Session(string id)
