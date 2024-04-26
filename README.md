@@ -1,2 +1,2 @@
 # WebServer-Softuni
-Private ASP.NET WebServer
+Private .NET WebServer for softuni lessons
